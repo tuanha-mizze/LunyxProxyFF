@@ -1,0 +1,2 @@
+# LunyxProxyFF
+LunyxProxy
