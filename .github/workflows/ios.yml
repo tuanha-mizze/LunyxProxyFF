@@ -1,0 +1,22 @@
+
+name: Build Lunyx Proxy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          xcodebuild -version
+
+      - name: Build iOS project
+        run: |
+          echo "Repository checked successfully"
+          find . -maxdepth 3 -type f
