@@ -2,6 +2,9 @@
 name: Build Lunyx Proxy
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -12,11 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Select Xcode
-        run: |
-          xcodebuild -version
+      - name: Check Xcode
+        run: xcodebuild -version
 
-      - name: Build iOS project
+      - name: Check project files
         run: |
-          echo "Repository checked successfully"
-          find . -maxdepth 3 -type f
+          echo "Lunyx Proxy repository"
+          find . -maxdepth 4 -type f
