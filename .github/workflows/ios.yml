@@ -12,13 +12,29 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check Xcode
-        run: xcodebuild -version
+      - name: Install XcodeGen
+        run: brew install xcodegen
 
-      - name: Check project files
+      - name: Generate Xcode project
+        run: xcodegen generate --spec project.yml
+
+      - name: Build iOS Simulator app
         run: |
-          echo "Lunyx Proxy repository"
-          find . -maxdepth 4 -type f
+          xcodebuild \
+            -project LunyxProxy.xcodeproj \
+            -scheme LunyxProxy \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Upload app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LunyxProxy-iOS-Simulator
+          path: build/Build/Products/Debug-iphonesimulator/LunyxProxy.app
