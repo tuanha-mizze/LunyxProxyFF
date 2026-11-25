@@ -1,5 +1,5 @@
 
-name: Build Lunyx Proxy
+name: Build Lunyx Proxy IPA
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install XcodeGen
@@ -21,20 +21,26 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate --spec project.yml
 
-      - name: Build iOS Simulator app
+      - name: Build iPhone app
         run: |
           xcodebuild \
             -project LunyxProxy.xcodeproj \
             -scheme LunyxProxy \
-            -sdk iphonesimulator \
-            -configuration Debug \
-            -destination 'generic/platform=iOS Simulator' \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
             build
 
-      - name: Upload app artifact
+      - name: Package IPA
+        run: |
+          mkdir -p Payload
+          cp -R build/Build/Products/Release-iphoneos/LunyxProxy.app Payload/
+          zip -r LunyxProxy.ipa Payload
+
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: LunyxProxy-iOS-Simulator
-          path: build/Build/Products/Debug-iphonesimulator/LunyxProxy.app
+          name: LunyxProxy-IPA
+          path: LunyxProxy.ipa
